@@ -1,8 +1,8 @@
 const Footer = () => {
     return (
-    <footer>
-        <div>Footer</div>
-    </footer>
+        <footer>
+            <div>© 2025 Kazakov Gennady</div>
+        </footer>
     );
 }
 

@@ -1,10 +1,10 @@
-const Nav = ({ items }) => {
+const Menu = ({ items, onSelectItem }) => {
     return (
         <nav>
             <ul>
                 {items.map((item, index) => (
                     <li key={index}>
-                        <a href={`#${item.toLowerCase()}`}>{item}</a>
+                        <li key={index} onClick={() => onSelectItem(item)}>{item}</li>
                     </li>
                 ))}
             </ul>
@@ -12,4 +12,4 @@ const Nav = ({ items }) => {
     );
 }
 
-export default Nav;
+export default Menu;

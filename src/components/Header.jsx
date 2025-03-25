@@ -1,10 +1,10 @@
-import Nav from './Nav';
+import React from 'react';
+import Menu from './Menu';
 
 const Header = () => {
     return (
         <header>
-            <div>Header</div>
-            <Nav items={['Main', 'Menu']}/>
+            <div>Lab List</div>
         </header>
     );
 }
