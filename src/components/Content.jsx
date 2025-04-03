@@ -1,3 +1,7 @@
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { decrement, increment } from "../actions";
+import store from "../store";
+
 const labContents = {
     "Lab 1": 
         <div>
@@ -151,11 +155,27 @@ const labContents = {
         </div>,
 };
 
+const Counter = () => {
+    const counter = useSelector((state) => state.count);
+    const dispatch = useDispatch();
+
+    return (
+        <div>
+            <h2>Counter: {counter}</h2>
+            <button onClick={() => dispatch(increment())}>Increment</button>
+            <button onClick={() => dispatch(decrement())}>Decrement</button>
+        </div>
+    );
+}
+
 const Content = ({selectedLab}) => {
     return (
         <main>
             <h2>{selectedLab}</h2>
             {labContents[selectedLab] || <p>Выберите лабораторную работу</p>}
+            <Provider store={store}>
+                <Counter/>
+            </Provider>
         </main>
     );
 }
