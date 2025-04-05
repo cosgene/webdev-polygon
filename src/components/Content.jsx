@@ -1,6 +1,9 @@
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { decrement, increment } from "../actions";
 import store from "../store";
+import FeedbackForm from "./FeedbackForm";
+import { useState } from "react";
+import FeedbackList from "./FeedbackList";
 
 const labContents = {
     "Lab 1": 
@@ -169,6 +172,12 @@ const Counter = () => {
 }
 
 const Content = ({selectedLab}) => {
+    const [feedbacks, setFeedbacks] = useState([]);
+
+    const handleAddFeedback = (feedback) => {
+        setFeedbacks((prev) => [...prev, feedback]);
+    }
+
     return (
         <main>
             <h2>{selectedLab}</h2>
@@ -176,6 +185,8 @@ const Content = ({selectedLab}) => {
             <Provider store={store}>
                 <Counter/>
             </Provider>
+            <FeedbackForm onAddFeedback={handleAddFeedback}/>
+            <FeedbackList feedbacks={feedbacks}/>
         </main>
     );
 }

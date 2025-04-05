@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 const Menu = ({ items, onSelectItem }) => {
     return (
         <nav>
+            <h2>Lab List</h2>
             <ul>
                 {items.map((item, index) => (
                     <li key={index} onClick={() => onSelectItem(item)}>
