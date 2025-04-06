@@ -1,10 +1,10 @@
 import React from 'react';
 import Menu from './Menu';
 import ThemeToggle from './ThemeToggle';
-import { useLoginState } from '../authContext';
+import { useLoginState } from '../context/AuthContext';
 
-const Header = () => {
-    const {username, logout} = useLoginState();
+const Header = ({username}) => {
+    const {logout} = useLoginState();
     return (
         <header style={{display: 'flex', justifyContent: 'space-between', padding: '10px'}}>
             <ThemeToggle/>

@@ -1,16 +1,7 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useLoginState } from "../authContext";
-import { useCallback } from "react";
 
-const LoginForm = () => {
-    const {login} = useLoginState();
-
-    const handleSumbit = useCallback((values, {setSubmitting}) => {
-        login(values.email);
-        setSubmitting(false);
-    },[login])
-
+const LoginForm = ({onSubmit}) => {
     return (
         <Formik
             initialValues={{email: "", password: ""}}
@@ -21,7 +12,7 @@ const LoginForm = () => {
                 password: Yup.string()
                     .required("Required field")
             })}
-            onSubmit={handleSumbit}
+            onSubmit={onSubmit}
         >
             {({isSubmitting}) => (
                 <Form>

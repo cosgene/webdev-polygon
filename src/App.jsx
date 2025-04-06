@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
@@ -8,29 +8,40 @@ import Footer from './components/Footer';
 import ThemeProvider from './components/ThemeProvider';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
-import { AuthProvider, useLoginState } from './authContext';
+import { AuthProvider, useLoginState } from './context/AuthContext';
 
-const ProtectedApp = ({selectedLab, setLab, labs}) => {
+const AppContent = ({selectedLab, setLab, labs}) => {
+  const {isLoggedIn, login} = useLoginState();
+  const [user, setUser] = useState();
+
+  const handleLoginSubmit = useCallback((values, {setSubmitting}) => {
+      login();
+      setUser({ username: values.email });
+      setSubmitting(false);
+  },[login])
+      
+  const handleRegisterSubmit = useCallback((values, {setSubmitting, resetForm}) => {
+      login();
+      resetForm();
+      setUser({ username: values.email });
+      setSubmitting(false);
+  },[login])
+
+  if (!isLoggedIn) {
+    return <LoginForm onSubmit={handleLoginSubmit}/>;
+  }
+
   return (
-    <>
-      <Header/>
-      <Menu items={labs} onSelectItem={setLab}/>
-      <Routes>
-        <Route path="/lab/:labId" element={<Content selectedLab={selectedLab}/>}/>
-      </Routes>
-      <Footer/>
-    </>
+    <div>
+        <Header username={user?.username}/>
+        <Menu items={labs} onSelectItem={setLab}/>
+        <Routes>
+          <Route path="/lab/:labId" element={<Content selectedLab={selectedLab}/>}/>
+        </Routes>
+        <Footer/>
+    </div>
   );
-};
-
-const AuthForms = () => (
-  <div>
-    <h2>Login</h2>
-    <LoginForm />
-    {/* <h2>Register</h2>
-    <RegisterForm /> */}
-  </div>
-);
+}
 
 function App() {
   const [selectedLab, setLab] = useState();
@@ -46,15 +57,5 @@ function App() {
     </Router>
   );
 }
-
-const AppContent = ({selectedLab, setLab, labs}) => {
-  const {isLoggedIn} = useLoginState();
-
-  return isLoggedIn ? (
-    <ProtectedApp selectedLab={selectedLab} setLab={setLab} labs={labs}/>
-  ) : (
-    <AuthForms />
-  );
-};
 
 export default App;

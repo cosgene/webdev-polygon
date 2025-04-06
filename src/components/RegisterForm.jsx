@@ -1,17 +1,7 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useLoginState } from "../authContext";
-import { useCallback } from "react";
 
-const RegisterForm = () => {
-    const {login} = useLoginState();
-    
-    const handleSumbit = useCallback((values, {setSubmitting, resetForm}) => {
-        login(values.email);
-        resetForm();
-        setSubmitting(false);
-    },[login])
-
+const RegisterForm = ({onSubmit}) => {
     return (
         <Formik
             initialValues={{email: "", password: "", confirmPassword: ""}}
@@ -26,7 +16,7 @@ const RegisterForm = () => {
                     .oneOf([Yup.ref("password")], "Passwords should match")
                     .required("Required field"),
             })}
-            onSubmit={handleSumbit}
+            onSubmit={onSubmit}
         >
             {({isSubmitting}) => (
                 <Form>
