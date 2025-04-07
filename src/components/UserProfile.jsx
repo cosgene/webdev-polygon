@@ -4,7 +4,7 @@ const UserProfile = ({username}) => {
     const {logout} = useLoginState();
 
     return (
-        <div style={{ position: 'absolute', top: 10, right: 10}}>
+        <div>
             <span>{username}</span>
             <button onClick={logout} style={{marginLeft: 10}}>
                 Log out
