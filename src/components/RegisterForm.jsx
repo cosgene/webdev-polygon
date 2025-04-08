@@ -21,19 +21,19 @@ const RegisterForm = ({onSubmit}) => {
             {({isSubmitting}) => (
                 <Form>
                     <div>
-                        <label>Email:</label>
+                        <label htmlFor="email">Email:</label>
                         <Field type="email" name="email"/>
-                        <ErrorMessage name="email" component="div" className="error"/>
+                        <ErrorMessage name="email" component="div"/>
                     </div>
                     <div>
-                        <label>Password:</label>
-                        <Field type="password" name="password" />
-                        <ErrorMessage name="password" component="div" className="error" />
+                        <label htmlFor="password">Password:</label>
+                        <Field type="password" name="password"/>
+                        <ErrorMessage name="password" component="div"/>
                     </div>
                     <div>
-                        <label>Confirm your password:</label>
-                        <Field type="password" name="confirmPassword" />
-                        <ErrorMessage name="confirmPassword" component="div" className="error"/>
+                        <label htmlFor="confirmPassword">Confirm your password:</label>
+                        <Field type="password" name="confirmPassword"/>
+                        <ErrorMessage name="confirmPassword" component="div"/>
                     </div>
                     <button type="submit" disabled={isSubmitting}>
                         Sign up

@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "email": "gene@ya.ru",
+      "password": "1234",
+      "id": "81bc"
+    }
+  ],
+  "feedbacks": [
+    {
+      "id": "9e91",
+      "name": "Gene",
+      "message": "Testing feedback."
+    }
+  ]
+}

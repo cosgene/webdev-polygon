@@ -1,9 +1,14 @@
-import { Provider, useDispatch, useSelector } from "react-redux";
-import { decrement, increment } from "../actions";
-import store from "../store";
 import FeedbackForm from "./FeedbackForm";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FeedbackList from "./FeedbackList";
+import Counter from "./Counter";
+import { useLoginState } from "../context/AuthContext";
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    fetchFeedbacks,
+    addFeedback,
+    deleteFeedback,
+  } from '../redux/actions';
 
 const labContents = {
     "Lab 1": 
@@ -158,35 +163,90 @@ const labContents = {
         </div>,
 };
 
-const Counter = () => {
-    const counter = useSelector((state) => state.count);
-    const dispatch = useDispatch();
-
-    return (
-        <div>
-            <h2>Counter: {counter}</h2>
-            <button onClick={() => dispatch(increment())}>Increment</button>
-            <button onClick={() => dispatch(decrement())}>Decrement</button>
-        </div>
-    );
-}
-
 const Content = ({selectedLab}) => {
-    const [feedbacks, setFeedbacks] = useState([]);
+    // const [feedbacks, setFeedbacks] = useState([]);
+    const {isLoggedIn} = useLoginState();
+    const dispatch = useDispatch();
+    const { feedbacks } = useSelector((state) => state);
 
-    const handleAddFeedback = (feedback) => {
-        setFeedbacks((prev) => [...prev, feedback]);
-    }
+    // const handleAddFeedback = useCallback(async (values) => {
+    //     try {
+    //         const response = await fetch('http://localhost:3001/feedbacks', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(values)
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error('Error sending feedback');
+    //         }
+
+    //         const data = await response.json();
+    //         setFeedbacks((prev) => [...prev, data]);
+    //     } catch (error) {
+    //         console.error('Error:', error.message)
+    //     }
+    // }, [])
+
+    // const handleDeleteFeedback = useCallback(async (id) => {
+    //     try {
+    //         const response = await fetch (`http://localhost:3001/feedbacks/${id}`, {
+    //             method: 'DELETE',
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error('Error deleting feedback');
+    //         }
+
+    //         setFeedbacks((prev) => prev.filter((fb) => fb.id !== id));
+    //     } catch (error) {
+    //         console.error('Error:', error.message);
+    //     }
+    // }, [])
+
+    // const fetchFeedbacks = useCallback(async () => {
+    //     try {
+    //         const response = await fetch('http://localhost:3001/feedbacks');
+    //         if (!response.ok) {
+    //             throw new Error('Error loading feedbacks');
+    //         }
+
+    //         const data = await response.json();
+    //         setFeedbacks(data);
+    //     } catch (error) {
+    //         console.error('Error:', error.message);
+    //     }
+    // }, []);
+
+    // useEffect(() => {
+    //     if (isLoggedIn) {
+    //         fetchFeedbacks();
+    //     }
+    // }, [isLoggedIn, fetchFeedbacks]);
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            dispatch(fetchFeedbacks());
+        }
+    }, [isLoggedIn, dispatch]);
+
+    const handleAddFeedback = (values) => {
+        dispatch(addFeedback(values));
+    };
+
+    const handleDeleteFeedback = (id) => {
+        dispatch(deleteFeedback(id));
+    };
 
     return (
         <main>
             <h2>{selectedLab}</h2>
             {labContents[selectedLab] || <p>Выберите лабораторную работу</p>}
-            <Provider store={store}>
-                <Counter/>
-            </Provider>
-            <FeedbackForm onAddFeedback={handleAddFeedback}/>
-            <FeedbackList feedbacks={feedbacks}/>
+            <Counter/>
+            <FeedbackForm onSubmit={handleAddFeedback}/>
+            <FeedbackList feedbacks={feedbacks} onDeleteFeedback={handleDeleteFeedback}/>
         </main>
     );
 }

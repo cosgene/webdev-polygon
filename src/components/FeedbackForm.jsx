@@ -2,12 +2,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useCallback } from "react";
 import * as Yup from "yup";
 
-const FeedbackForm = ({onAddFeedback}) => {
-    const handleSumbit = useCallback((values, {resetForm}) => {
-        onAddFeedback(values);
-        resetForm();
-    }, []);
-
+const FeedbackForm = ({onSubmit}) => {
     return (
         <Formik
             initialValues={{name: "", message: ""}}
@@ -15,7 +10,7 @@ const FeedbackForm = ({onAddFeedback}) => {
                 name: Yup.string().required("Enter your name"),
                 message: Yup.string().required("Enter your message"),
             })}
-            onSubmit={handleSumbit}
+            onSubmit={onSubmit}
         >
             {() => (
                 <Form>

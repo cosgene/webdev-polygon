@@ -17,14 +17,14 @@ const LoginForm = ({onSubmit}) => {
             {({isSubmitting}) => (
                 <Form>
                     <div>
-                        <label>Email:</label>
+                        <label htmlFor="email">Email:</label>
                         <Field type="email" name="email"/>
-                        <ErrorMessage name="email" component="div" className="error"/>
+                        <ErrorMessage name="email" component="div"/>
                     </div>
                     <div>
-                        <label>Password:</label>
+                        <label htmlFor="password">Password:</label>
                         <Field type="password" name="password"/>
-                        <ErrorMessage name="password" component="div" className="error"/>
+                        <ErrorMessage name="password" component="div"/>
                     </div>
                     <button type="submit" disabled={isSubmitting}>
                         Log in
