@@ -7,12 +7,13 @@ export const AuthProvider = ({children}) => {
         return localStorage.getItem('isLoggedIn') === 'true';
     });
 
-    useEffect(() => {
-        localStorage.setItem('isLoggedIn', isLoggedIn);
-    }, [isLoggedIn]);
-    
-    const login = () => setIsLoggedIn(true);
-    const logout = () => setIsLoggedIn(false);
+    const s = (loginFlag) => () => {
+        setIsLoggedIn(loginFlag);
+        localStorage.setItem('isLoggedIn', loginFlag);
+    }
+
+    const login = s(true);
+    const logout = s(false);
 
     return (
         <AuthContext.Provider value={{isLoggedIn, login, logout}}>

@@ -9,9 +9,10 @@ import {
     addFeedback,
     deleteFeedback,
   } from '../redux/actions';
+import { useParams } from "react-router-dom";
 
 const labContents = {
-    "Lab 1": 
+    1: 
         <div>
             <ul>
                 <li>Реализовать скрипт, который уведомит о полной загрузке страницы</li>
@@ -27,7 +28,7 @@ const labContents = {
                 </li>
             </ul>
         </div>,
-    "Lab 2":  
+    2:  
         <div>
             <ul>
                 <li>Создать "Hello World" приложение на основе React.</li>
@@ -38,7 +39,7 @@ const labContents = {
                 <li>Прикрепить текстовый файл с сылкой на проект</li>
             </ul>
         </div>,
-    "Lab 3":
+    3:
         <div>  
             <ul>
                 <li> Продолжаем задание "Реализовать шаблон страницы и разместить на нем компоненты навигации" (Можно использовать готовые библиотеки Mui/Bootstrap и тд) 
@@ -52,7 +53,7 @@ const labContents = {
                 <li>Прикрепить текстовый файл с сылкой на проект</li>
             </ul>
         </div>,
-    "Lab 4":
+    4:
         <div>
             <ul>
                 <li>Реализовать изменение темы (день/ночь) используя Context</li>
@@ -74,7 +75,7 @@ const labContents = {
                 </li>
             </ul>
         </div>,
-    "Lab 5":
+    5:
         <div>
             <ul>
                 <li>Реализовать форму регистрации и форму авторизации с помощью React-hook-forms или Formik (валидация полей)</li>
@@ -92,7 +93,7 @@ const labContents = {
                 <li>Прикрепить ссылку в виде текста</li>
             </ul>
         </div>,
-    "Lab 6":
+    6:
         <div>
             <ul>
                 <li>Реализовать или использовать простой REST сервер</li>
@@ -109,7 +110,7 @@ const labContents = {
                 <li>Прикрепить сылку на проект в виде текста</li>
             </ul>
         </div>,
-    "Lab 7":
+    7:
         <div>
             <ul>
                 <li>Внедрить в проект UI Kit Mui/Bootstrap или им подобное, для возможности адаптива.</li>
@@ -126,7 +127,7 @@ const labContents = {
                 <li>Прикрепить сылку на проект в виде текста</li>
             </ul>
         </div>,
-    "Lab 8":
+    8:
         <div>
             <ul>
                 <li>Внедрить в проект  таблицы react-table.</li>
@@ -150,7 +151,7 @@ const labContents = {
                 <li>Прикрепить  сылку на проект в виде текста</li>
             </ul>
         </div>,
-    "Lab 9":
+    9:
         <div>
             <ul>
                 <li>Написать тест для компонента кнопки</li>
@@ -163,11 +164,13 @@ const labContents = {
         </div>,
 };
 
-const Content = ({selectedLab}) => {
+const Content = () => {
     // const [feedbacks, setFeedbacks] = useState([]);
     const {isLoggedIn} = useLoginState();
     const dispatch = useDispatch();
     const { feedbacks } = useSelector((state) => state);
+    const params = useParams();
+    const currentLab = params.labId;
 
     // const handleAddFeedback = useCallback(async (values) => {
     //     try {
@@ -242,8 +245,8 @@ const Content = ({selectedLab}) => {
 
     return (
         <main>
-            <h2>{selectedLab}</h2>
-            {labContents[selectedLab] || <p>Выберите лабораторную работу</p>}
+            <h2>{`Lab ${currentLab}`}</h2>
+            {labContents[currentLab] || <p>Выберите лабораторную работу</p>}
             <Counter/>
             <FeedbackForm onSubmit={handleAddFeedback}/>
             <FeedbackList feedbacks={feedbacks} onDeleteFeedback={handleDeleteFeedback}/>

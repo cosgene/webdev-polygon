@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import Menu from './components/Menu';
@@ -124,7 +124,7 @@ const AppContent = ({selectedLab, setLab, labs}) => {
                 onSubmit={handleProfileEditSubmit}
             />
             <Routes>
-                <Route path="/lab/:labId" element={<Content selectedLab={selectedLab}/>}/>
+                <Route path="/lab/:labId/" element={<Content/>}/>
             </Routes>
             <RegisterForm onSubmit={handleRegisterSubmit}/>
             <Footer/>
