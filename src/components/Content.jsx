@@ -1,5 +1,5 @@
 import FeedbackForm from "./FeedbackForm";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import FeedbackList from "./FeedbackList";
 import Counter from "./Counter";
 import { useLoginState } from "../context/AuthContext";
@@ -165,69 +165,11 @@ const labContents = {
 };
 
 const Content = () => {
-    // const [feedbacks, setFeedbacks] = useState([]);
     const {isLoggedIn} = useLoginState();
     const dispatch = useDispatch();
     const { feedbacks } = useSelector((state) => state);
     const params = useParams();
     const currentLab = params.labId;
-
-    // const handleAddFeedback = useCallback(async (values) => {
-    //     try {
-    //         const response = await fetch('http://localhost:3001/feedbacks', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(values)
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error('Error sending feedback');
-    //         }
-
-    //         const data = await response.json();
-    //         setFeedbacks((prev) => [...prev, data]);
-    //     } catch (error) {
-    //         console.error('Error:', error.message)
-    //     }
-    // }, [])
-
-    // const handleDeleteFeedback = useCallback(async (id) => {
-    //     try {
-    //         const response = await fetch (`http://localhost:3001/feedbacks/${id}`, {
-    //             method: 'DELETE',
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error('Error deleting feedback');
-    //         }
-
-    //         setFeedbacks((prev) => prev.filter((fb) => fb.id !== id));
-    //     } catch (error) {
-    //         console.error('Error:', error.message);
-    //     }
-    // }, [])
-
-    // const fetchFeedbacks = useCallback(async () => {
-    //     try {
-    //         const response = await fetch('http://localhost:3001/feedbacks');
-    //         if (!response.ok) {
-    //             throw new Error('Error loading feedbacks');
-    //         }
-
-    //         const data = await response.json();
-    //         setFeedbacks(data);
-    //     } catch (error) {
-    //         console.error('Error:', error.message);
-    //     }
-    // }, []);
-
-    // useEffect(() => {
-    //     if (isLoggedIn) {
-    //         fetchFeedbacks();
-    //     }
-    // }, [isLoggedIn, fetchFeedbacks]);
 
     useEffect(() => {
         if (isLoggedIn) {
