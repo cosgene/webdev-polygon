@@ -1,20 +1,38 @@
-import { createContext, useState, useEffect } from "react";
+import React, {useMemo, useState} from 'react';
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
-export const ThemeContext = createContext("light");
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: { main: '#1976d2' },
+    secondary: { main: '#dc004e' },
+    background: { default: '#ffffff', paper: '#f5f5f5' },
+  },
+});
 
-const ThemeProvider = ({children}) => {
-    const [theme, setTheme] = useState("light");
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: { main: '#90caf9' },
+    secondary: { main: '#f48fb1' },
+    background: { default: '#222222', paper: '#333333' },
+  },
+});
 
-    useEffect(() => {
-        document.body.style.backgroundColor = theme === "light" ? "#ffffff" : "#222222";
-        document.body.style.color = theme === "light" ? "#000000" : "#ffffff";
-    }, [theme]);
+const ThemeProvider = ({ children }) => {
+  const [mode, setMode] = useState('light');
 
-    return (
-        <ThemeContext.Provider value={{theme, setTheme}}>
-            {children}
-        </ThemeContext.Provider>
-    );
-}
+  const theme = useMemo(() => (mode === 'light' ? lightTheme : darkTheme), [mode]);
+
+  theme.toggleTheme = () => setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+
+  return (
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </MuiThemeProvider>
+  );
+};
 
 export default ThemeProvider;

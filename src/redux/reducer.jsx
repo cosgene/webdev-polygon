@@ -6,6 +6,7 @@ import {
     ADD_FEEDBACK,
     UPDATE_USER,
     DELETE_FEEDBACK,
+    RESTORE_USER,
   } from './actions';
   
   const initialState = {
@@ -33,6 +34,8 @@ import {
           ...state,
           feedbacks: state.feedbacks.filter((feedback) => feedback.id !== action.payload),
         };
+      case RESTORE_USER:
+        return { ...state, user: action.payload };
       default:
         return state;
     }

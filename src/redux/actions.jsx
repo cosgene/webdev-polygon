@@ -5,9 +5,15 @@ export const SET_FEEDBACKS = 'SET_FEEDBACKS';
 export const ADD_FEEDBACK = 'ADD_FEEDBACK';
 export const UPDATE_USER = 'UPDATE_USER';
 export const DELETE_FEEDBACK = 'DELETE_FEEDBACK';
+export const RESTORE_USER = 'RESTORE_USER';
 
 export const increment = () => ({ type: INCREMENT });
 export const decrement = () => ({ type: DECREMENT });
+
+export const restoreUser = (user) => ({
+  type: RESTORE_USER,
+  payload: user,
+});
 
 export const registerUser = (userData) => async (dispatch) => {
   try {
@@ -37,6 +43,7 @@ export const loginUser = (credentials, loginCallback) => async (dispatch) => {
 
     const foundUser = users[0];
     dispatch({ type: SET_USER, payload: foundUser });
+    localStorage.setItem('user', JSON.stringify(foundUser));
     loginCallback();
   } catch (error) {
     console.error('Log in error:', error.message);
@@ -82,6 +89,7 @@ export const updateUserProfile = (id, userData) => async (dispatch) => {
     if (!response.ok) throw new Error('Error updating profile');
     const updatedUser = await response.json();
     dispatch({ type: UPDATE_USER, payload: updatedUser });
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   } catch (error) {
     console.error('Error:', error.message);
   }

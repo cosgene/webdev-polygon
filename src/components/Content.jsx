@@ -1,4 +1,3 @@
-import FeedbackForm from "./FeedbackForm";
 import { useEffect } from "react";
 import FeedbackList from "./FeedbackList";
 import Counter from "./Counter";
@@ -6,14 +5,14 @@ import { useLoginState } from "../context/AuthContext";
 import { useDispatch, useSelector } from 'react-redux';
 import {
     fetchFeedbacks,
-    addFeedback,
     deleteFeedback,
   } from '../redux/actions';
 import { useParams } from "react-router-dom";
+import { Box, Typography, Stack } from '@mui/material';
 
 const labContents = {
     1: 
-        <div>
+        <Box>
             <ul>
                 <li>Реализовать скрипт, который уведомит о полной загрузке страницы</li>
                 <li>Реализовать кнопку счетчик, которая будет увеличивать счетчик на "1" и вывести его значение на страницу (button onclick)</li>
@@ -27,9 +26,9 @@ const labContents = {
                     </ul>
                 </li>
             </ul>
-        </div>,
+        </Box>,
     2:  
-        <div>
+        <Box>
             <ul>
                 <li>Создать "Hello World" приложение на основе React.</li>
                 <li>Для создания можно использовать create-react-app или vite</li>
@@ -38,9 +37,9 @@ const labContents = {
                 <li>Разместить проект в репозиторий в github</li>
                 <li>Прикрепить текстовый файл с сылкой на проект</li>
             </ul>
-        </div>,
+        </Box>,
     3:
-        <div>  
+        <Box>  
             <ul>
                 <li> Продолжаем задание "Реализовать шаблон страницы и разместить на нем компоненты навигации" (Можно использовать готовые библиотеки Mui/Bootstrap и тд) 
                     <ul>
@@ -52,9 +51,9 @@ const labContents = {
                 <li>Разместить проект в репозиторий в github</li>
                 <li>Прикрепить текстовый файл с сылкой на проект</li>
             </ul>
-        </div>,
+        </Box>,
     4:
-        <div>
+        <Box>
             <ul>
                 <li>Реализовать изменение темы (день/ночь) используя Context</li>
                 <li>useState и useEffect - простые примеры
@@ -74,9 +73,9 @@ const labContents = {
                     </ul>
                 </li>
             </ul>
-        </div>,
+        </Box>,
     5:
-        <div>
+        <Box>
             <ul>
                 <li>Реализовать форму регистрации и форму авторизации с помощью React-hook-forms или Formik (валидация полей)</li>
                 <li>Реализовать блок обратной связи. Форма обратной связи и список отзывов</li>
@@ -92,9 +91,9 @@ const labContents = {
                 <li>Разместить лабораторную работу в репозиторий в github отдельным коммитом</li>
                 <li>Прикрепить ссылку в виде текста</li>
             </ul>
-        </div>,
+        </Box>,
     6:
-        <div>
+        <Box>
             <ul>
                 <li>Реализовать или использовать простой REST сервер</li>
                 <li>Реализовать несколько (GET, POST, PUT, DELETE) запросов на сервер используя промисы JS (fetch, axios).
@@ -109,9 +108,9 @@ const labContents = {
                 <li>Разместить лабораторную работу в репозиторий в github отдельным коммитом</li>
                 <li>Прикрепить сылку на проект в виде текста</li>
             </ul>
-        </div>,
+        </Box>,
     7:
-        <div>
+        <Box>
             <ul>
                 <li>Внедрить в проект UI Kit Mui/Bootstrap или им подобное, для возможности адаптива.</li>
                 <li>Реализовать Header (Главная, О себе) - отдельные страницы.
@@ -126,9 +125,9 @@ const labContents = {
                 <li>Разместить лабораторную работу в репозиторий в github отдельным коммитом</li>
                 <li>Прикрепить сылку на проект в виде текста</li>
             </ul>
-        </div>,
+        </Box>,
     8:
-        <div>
+        <Box>
             <ul>
                 <li>Внедрить в проект  таблицы react-table.</li>
                 <li>Добавить роли пользователей admin, user</li>
@@ -150,9 +149,9 @@ const labContents = {
                 <li>Разместить лабораторную работу в репозиторий в github отдельным коммитом</li>
                 <li>Прикрепить  сылку на проект в виде текста</li>
             </ul>
-        </div>,
+        </Box>,
     9:
-        <div>
+        <Box>
             <ul>
                 <li>Написать тест для компонента кнопки</li>
                 <li>Провести рефакторинг страницы со списком данных с сервера. Переписать запрос к backend через rtk-query(useGetPostsQuery). </li>
@@ -161,7 +160,7 @@ const labContents = {
                 <li>Результат работы разместить на github отдельным коммитом.</li>
                 <li>Ссылку на репозиторий приложить к заданию</li>
             </ul>
-        </div>,
+        </Box>,
 };
 
 const Content = () => {
@@ -177,23 +176,22 @@ const Content = () => {
         }
     }, [isLoggedIn, dispatch]);
 
-    const handleAddFeedback = (values) => {
-        dispatch(addFeedback(values));
-    };
-
     const handleDeleteFeedback = (id) => {
         dispatch(deleteFeedback(id));
     };
 
     return (
-        <main>
-            <h2>{`Lab ${currentLab}`}</h2>
-            {labContents[currentLab] || <p>Выберите лабораторную работу</p>}
+        <Box sx={{ p: 3, pb: { xs: 8, sm: 8, md: 3 } }}>
+        <Typography variant="h4" gutterBottom>
+            {`Lab ${currentLab}`}
+        </Typography>
+        <Stack>
+            {labContents[currentLab] || <Typography>Выберите лабораторную работу</Typography>}
             <Counter/>
-            <FeedbackForm onSubmit={handleAddFeedback}/>
-            <FeedbackList feedbacks={feedbacks} onDeleteFeedback={handleDeleteFeedback}/>
-        </main>
-    );
+            <FeedbackList feedbacks={feedbacks} onDeleteFeedback={handleDeleteFeedback} />
+        </Stack>
+        </Box>
+  );
 }
 
 export default Content;

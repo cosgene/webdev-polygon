@@ -1,15 +1,23 @@
-import { useLoginState } from "../context/AuthContext";
+import ProfileEditForm from "./ProfileEditForm";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUserProfile } from '../redux/actions';
 
-const UserProfile = ({username}) => {
-    const {logout} = useLoginState();
+const UserProfile = () => {
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state);
+
+    const handleProfileEditSubmit = (values, { setSubmitting }) => {
+        if (user) {
+            dispatch(updateUserProfile(user.id, { email: values.email, password: user.password }));
+        }
+        setSubmitting(false);
+    };
 
     return (
-        <div>
-            <span>{username}</span>
-            <button onClick={logout} style={{marginLeft: 10}}>
-                Log out
-            </button>
-        </div>
+        <>
+            <ProfileEditForm initialValues={{ email: user?.email || '' }} onSubmit={handleProfileEditSubmit} />
+        </>
     );
 }
 
