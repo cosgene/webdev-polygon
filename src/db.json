@@ -2,15 +2,44 @@
   "users": [
     {
       "email": "1@1.ru",
-      "password": "1234",
-      "id": "81bc"
+      "password": "123",
+      "role": "admin",
+      "isBlocked": false,
+      "id": "dd7e"
+    },
+    {
+      "isBlocked": false,
+      "role": "admin",
+      "email": "3@1.ru",
+      "password": "123",
+      "id": "5132"
+    },
+    {
+      "isBlocked": false,
+      "role": "user",
+      "email": "2@2.ru",
+      "password": "123",
+      "id": "aeab"
     }
   ],
   "feedbacks": [
     {
       "id": "9e91",
       "name": "Gene",
-      "message": "Testing feedback."
+      "message": "Testing feedback.",
+      "isBlocked": false
+    },
+    {
+      "id": "24f3",
+      "name": "Putin",
+      "message": "Great website",
+      "isBlocked": false
+    },
+    {
+      "isBlocked": false,
+      "name": "1",
+      "message": "1",
+      "id": "15e9"
     }
   ]
 }

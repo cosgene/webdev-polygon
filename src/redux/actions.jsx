@@ -6,6 +6,9 @@ export const ADD_FEEDBACK = 'ADD_FEEDBACK';
 export const UPDATE_USER = 'UPDATE_USER';
 export const DELETE_FEEDBACK = 'DELETE_FEEDBACK';
 export const RESTORE_USER = 'RESTORE_USER';
+export const DELETE_USER = 'DELETE_USER';
+export const BLOCK_USER = 'BLOCK_USER';
+export const BLOCK_FEEDBACK = 'BLOCK_FEEDBACK';
 
 export const increment = () => ({ type: INCREMENT });
 export const decrement = () => ({ type: DECREMENT });
@@ -21,7 +24,7 @@ export const registerUser = (userData) => async (dispatch) => {
     const response = await fetch('http://localhost:3001/users', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email, password}),
+      body: JSON.stringify({email, password, role: 'user', isBlocked: false}),
     });
 
     if (!response.ok) throw new Error('Sign up error');
@@ -34,8 +37,9 @@ export const registerUser = (userData) => async (dispatch) => {
 export const loginUser = (credentials, loginCallback) => async (dispatch) => {
   try {
     const response = await fetch(
-      `http://localhost:3001/users?email=${credentials.email}&password=${credentials.password}`
+      `http://localhost:3001/users?email=${credentials.email}&password=${credentials.password}&isBlocked=false`
     );
+    console.log(`http://localhost:3001/users?email=${credentials.email}&password=${credentials.password}`);
     if (!response.ok) throw new Error('Login user error');
 
     const users = await response.json();
@@ -67,7 +71,7 @@ export const addFeedback = (feedback) => async (dispatch) => {
     const response = await fetch('http://localhost:3001/feedbacks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(feedback),
+      body: JSON.stringify({...feedback, isBlocked: false}),
     });
 
     if (!response.ok) throw new Error('Error adding feedback');
@@ -103,6 +107,48 @@ export const deleteFeedback = (id) => async (dispatch) => {
 
     if (!response.ok) throw new Error('Error deleting feedback');
     dispatch({ type: DELETE_FEEDBACK, payload: id });
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+};
+
+export const deleteUser = (id) => async (dispatch) => {
+  try {
+    const response = await fetch(`http://localhost:3001/users/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Error deleting user');
+    dispatch({ type: DELETE_USER, payload: id });
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+};
+
+export const blockUser = (id, isBlocked) => async (dispatch) => {
+  try {
+    const response = await fetch(`http://localhost:3001/users/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(isBlocked),
+    });
+    if (!response.ok) throw new Error('Error blocking user');
+    const updatedUser = await response.json();
+    dispatch({ type: BLOCK_USER, payload: updatedUser });
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+};
+
+export const blockFeedback = (id, isBlocked) => async (dispatch) => {
+  try {
+    const response = await fetch(`http://localhost:3001/feedbacks/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(isBlocked),
+    });
+    if (!response.ok) throw new Error('Error blocking');
+    const updatedFeedback = await response.json();
+    dispatch({ type: BLOCK_FEEDBACK, payload: updatedFeedback });
   } catch (error) {
     console.error('Error:', error.message);
   }

@@ -1,14 +1,5 @@
-import { useEffect } from "react";
-import FeedbackList from "./FeedbackList";
-import Counter from "./Counter";
-import { useLoginState } from "../context/AuthContext";
-import { useDispatch, useSelector } from 'react-redux';
-import {
-    fetchFeedbacks,
-    deleteFeedback,
-  } from '../redux/actions';
 import { useParams } from "react-router-dom";
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 const labContents = {
     1: 
@@ -163,35 +154,18 @@ const labContents = {
         </Box>,
 };
 
-const Content = () => {
-    const {isLoggedIn} = useLoginState();
-    const dispatch = useDispatch();
-    const { feedbacks } = useSelector((state) => state);
+const LabContent = () => {
     const params = useParams();
     const currentLab = params.labId;
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            dispatch(fetchFeedbacks());
-        }
-    }, [isLoggedIn, dispatch]);
-
-    const handleDeleteFeedback = (id) => {
-        dispatch(deleteFeedback(id));
-    };
 
     return (
         <Box sx={{ p: 3, pb: { xs: 8, sm: 8, md: 3 } }}>
         <Typography variant="h4" gutterBottom>
             {`Lab ${currentLab}`}
         </Typography>
-        <Stack>
-            {labContents[currentLab] || <Typography>Выберите лабораторную работу</Typography>}
-            <Counter/>
-            <FeedbackList feedbacks={feedbacks} onDeleteFeedback={handleDeleteFeedback} />
-        </Stack>
+        {labContents[currentLab] || <Typography>Выберите лабораторную работу</Typography>}
         </Box>
   );
 }
 
-export default Content;
+export default LabContent;

@@ -17,7 +17,7 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MenuIcon from '@mui/icons-material/Menu';
 
-const Header = ({ username, toggleDrawer }) => {
+const Header = ({ user, toggleDrawer }) => {
   const { logout } = useLoginState();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -57,18 +57,21 @@ const Header = ({ username, toggleDrawer }) => {
           icon={<Brightness7Icon />}
           checkedIcon={<Brightness4Icon />}
         />
-        {username && (
+        {user && (
           <>
             <IconButton onClick={handleMenu} color="inherit">
-              <Avatar>{username.charAt(0).toUpperCase()}</Avatar>
+              <Avatar>{user.email.charAt(0).toUpperCase()}</Avatar>
             </IconButton>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem disabled>{username}</MenuItem>
+              <MenuItem disabled>{user.email}</MenuItem>
               <MenuItem component={RouterLink} to='/profile'>Edit profile</MenuItem>
+              {user?.role === 'admin' && (
+                <MenuItem component={RouterLink} to='/admin'>Admin panel</MenuItem>
+              )}
               <MenuItem onClick={() => { handleClose(); logout(); }}>
                 Log out
               </MenuItem>

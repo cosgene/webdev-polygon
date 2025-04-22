@@ -10,11 +10,12 @@ import Header from './Header';
 import Menu from './Menu';
 import MainPage from './MainPage';
 import AboutPage from './AboutPage';
-import Content from './Content';
+import LabContent from './LabContent';
 import Footer from './Footer';
 import { Box } from '@mui/material';
 import QuickActions from './QuickActions';
 import UserProfile from './UserProfile';
+import AdminPage from './AdminPage';
 
 const AppContent = ({ labs }) => {
   const { isLoggedIn, login } = useLoginState();
@@ -51,7 +52,7 @@ const AppContent = ({ labs }) => {
 
   return (
     <>
-      <Header username={user?.email} toggleDrawer={toggleDrawer} />
+      <Header user={user} toggleDrawer={toggleDrawer} />
       <Menu items={labs} open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <Box sx={{ p: { xs: 2, sm: 3 }, pb: { xs: 8, sm: 8, md: 3 } }}>
         <Routes>
@@ -59,7 +60,8 @@ const AppContent = ({ labs }) => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/feedback" element={<FeedbackForm onSubmit={handleAddFeedback}/>} />
-            <Route path="/lab/:labId" element={<Content />} />
+            <Route path="/admin" element={<AdminPage/>}/>
+            <Route path="/lab/:labId" element={<LabContent />} />
         </Routes>
         <Box sx={{ mt: 4 }}>
             <Footer />

@@ -9,7 +9,7 @@ const UserProfile = () => {
 
     const handleProfileEditSubmit = (values, { setSubmitting }) => {
         if (user) {
-            dispatch(updateUserProfile(user.id, { email: values.email, password: user.password }));
+            dispatch(updateUserProfile(user.id, { email: values.email, password: user.password, role: user.role,  isBlocked: user.isBlocked}));
         }
         setSubmitting(false);
     };

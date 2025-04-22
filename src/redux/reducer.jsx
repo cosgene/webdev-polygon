@@ -7,6 +7,9 @@ import {
     UPDATE_USER,
     DELETE_FEEDBACK,
     RESTORE_USER,
+    DELETE_USER,
+    BLOCK_USER,
+    BLOCK_FEEDBACK,
   } from './actions';
   
   const initialState = {
@@ -36,6 +39,23 @@ import {
         };
       case RESTORE_USER:
         return { ...state, user: action.payload };
+      case DELETE_USER:
+        return {
+          ...state,
+          user: state.user?.id === action.payload ? null : state.user,
+        };
+      case BLOCK_USER:
+        return {
+          ...state,
+          user: state.user?.id === action.payload.id ? action.payload : state.user,
+        };
+      case BLOCK_FEEDBACK:
+        return {
+          ...state,
+          feedbacks: state.feedbacks.map((feedback) =>
+            feedback.id === action.payload.id ? action.payload : feedback
+          ),
+        };
       default:
         return state;
     }
