@@ -9,17 +9,17 @@
     },
     {
       "isBlocked": false,
-      "role": "admin",
-      "email": "3@1.ru",
-      "password": "123",
-      "id": "5132"
-    },
-    {
-      "isBlocked": false,
       "role": "user",
       "email": "2@2.ru",
       "password": "123",
       "id": "aeab"
+    },
+    {
+      "id": "a0c9",
+      "email": "3@3.ru",
+      "password": "12345678",
+      "role": "user",
+      "isBlocked": true
     }
   ],
   "feedbacks": [
@@ -34,12 +34,6 @@
       "name": "Putin",
       "message": "Great website",
       "isBlocked": false
-    },
-    {
-      "isBlocked": false,
-      "name": "1",
-      "message": "1",
-      "id": "15e9"
     }
   ]
 }

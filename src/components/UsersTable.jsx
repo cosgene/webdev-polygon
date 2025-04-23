@@ -4,13 +4,13 @@ import {
   closestCenter,
   PointerSensor,
   useSensor,
-  useSensors
+  useSensors,
 } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
   useSortable,
-  horizontalListSortingStrategy
+  horizontalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -27,24 +27,17 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { TableVirtuoso } from 'react-virtuoso';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import db from '../db.json';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlockIcon from '@mui/icons-material/Block';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-    deleteUser,
-    blockUser,
-} from '../redux/actions';
+import { useGetUsersQuery, useDeleteUserMutation, useBlockUserMutation } from '../services/api';
 
 const defaultColumns = [
   { width: 20, label: 'ID', dataKey: 'id' },
   { width: 20, label: 'E-mail', dataKey: 'email' },
-  { width: 20,  label: 'Role', dataKey: 'role',},
-  { width: 20, label: 'Blocked', dataKey: 'isBlocked'},
-  { width: 20, label: 'Actions', dataKey: 'actions', sortable: false},
+  { width: 20, label: 'Role', dataKey: 'role' },
+  { width: 20, label: 'Blocked', dataKey: 'isBlocked' },
+  { width: 20, label: 'Actions', dataKey: 'actions', sortable: false },
 ];
-
-const rows = db.users
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
@@ -58,7 +51,6 @@ const VirtuosoTableComponents = {
   TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
 };
 
-// Sortable & optionally sticky header cell
 function SortableHeaderCell({ column, index, isMobile, sortBy, sortDirection, onSort }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: column.dataKey });
 
@@ -95,11 +87,10 @@ function SortableHeaderCell({ column, index, isMobile, sortBy, sortDirection, on
           column.label
         )}
         {column.sortable !== false && !isMobile && (
-        <IconButton {...listeners} size="small">
-          <DragIndicatorIcon fontSize="small" />
-        </IconButton>
-        )
-        }
+          <IconButton {...listeners} size="small">
+            <DragIndicatorIcon fontSize="small" />
+          </IconButton>
+        )}
       </div>
     </TableCell>
   );
@@ -108,8 +99,9 @@ function SortableHeaderCell({ column, index, isMobile, sortBy, sortDirection, on
 export default function UsersTable() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state);
+  const { data: users, isLoading: isUsersLoading, error: usersError } = useGetUsersQuery();
+  const [deleteUser] = useDeleteUserMutation();
+  const [blockUser] = useBlockUserMutation();
 
   const [columns, setColumns] = React.useState(defaultColumns);
   const [sortBy, setSortBy] = React.useState(null);
@@ -125,26 +117,26 @@ export default function UsersTable() {
   };
 
   const sortedRows = React.useMemo(() => {
-    if (!sortBy) return rows;
-    return [...rows].sort((a, b) => {
+    if (!sortBy || !users) return users || [];
+    return [...users].sort((a, b) => {
       const diff = a[sortBy] < b[sortBy] ? -1 : a[sortBy] > b[sortBy] ? 1 : 0;
       return diff * (sortDirection === 'asc' ? 1 : -1);
     });
-  }, [sortBy, sortDirection]);
+  }, [users, sortBy, sortDirection]);
 
   const sensors = useSensors(useSensor(PointerSensor));
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
-      const oldIndex = columns.findIndex(c => c.dataKey === active.id);
-      const newIndex = columns.findIndex(c => c.dataKey === over.id);
+      const oldIndex = columns.findIndex((c) => c.dataKey === active.id);
+      const newIndex = columns.findIndex((c) => c.dataKey === over.id);
       setColumns((cols) => arrayMove(cols, oldIndex, newIndex));
     }
   };
 
   const fixedHeaderContent = () => (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={columns.map(c => c.dataKey)} strategy={horizontalListSortingStrategy}>
+      <SortableContext items={columns.map((c) => c.dataKey)} strategy={horizontalListSortingStrategy}>
         <TableRow>
           {columns.map((col, idx) => (
             <SortableHeaderCell
@@ -168,19 +160,31 @@ export default function UsersTable() {
         const sx = idx === 0 && isMobile
           ? { position: 'sticky', left: 0, zIndex: 1, backgroundColor: 'background.paper' }
           : {};
-  
+
         if (col.dataKey === 'actions') {
           return (
             <TableCell key="actions" align="center" sx={sx}>
               <IconButton
                 size="small"
-                onClick={() => dispatch(deleteUser(row.id))}
+                onClick={async () => {
+                  try {
+                    await deleteUser(row.id).unwrap();
+                  } catch (error) {
+                    console.error('Failed to delete user:', error);
+                  }
+                }}
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
               <IconButton
                 size="small"
-                onClick={() => dispatch(blockUser(row.id, {isBlocked: !row.isBlocked, role: row.role, email: row.email, password: row.password}))}
+                onClick={async () => {
+                  try {
+                    await blockUser({ id: row.id, isBlocked: !row.isBlocked }).unwrap();
+                  } catch (error) {
+                    console.error('Failed to block user:', error);
+                  }
+                }}
               >
                 <BlockIcon fontSize="small" />
               </IconButton>
@@ -199,6 +203,9 @@ export default function UsersTable() {
       })}
     </>
   );
+
+  if (isUsersLoading) return <div>Loading...</div>;
+  if (usersError) return <div>Error: {usersError.message}</div>;
 
   return (
     <Paper style={{ height: 400, width: '100%' }}>

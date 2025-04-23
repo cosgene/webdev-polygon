@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './App.css';
 import ThemeProvider from './components/ThemeProvider';
 import { AuthProvider } from './context/AuthContext';
@@ -11,7 +11,7 @@ function App() {
     const labs = ['Lab 1', 'Lab 2', 'Lab 3', 'Lab 4', 'Lab 5', 'Lab 6', 'Lab 7', 'Lab 8', 'Lab 9'];
 
     return (
-        <Router>
+        <BrowserRouter>
             <Provider store={store}>
               <AuthProvider>
                   <ThemeProvider>
@@ -19,7 +19,7 @@ function App() {
                   </ThemeProvider>
               </AuthProvider>
             </Provider>
-        </Router>
+        </BrowserRouter>
     );
 }
 

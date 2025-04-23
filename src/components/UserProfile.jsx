@@ -5,7 +5,7 @@ import { updateUserProfile } from '../redux/actions';
 
 const UserProfile = () => {
     const dispatch = useDispatch();
-    const { user } = useSelector((state) => state);
+    const user = useSelector((state) => state.app.user);
 
     const handleProfileEditSubmit = (values, { setSubmitting }) => {
         if (user) {

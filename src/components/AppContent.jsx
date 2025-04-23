@@ -20,7 +20,7 @@ import AdminPage from './AdminPage';
 const AppContent = ({ labs }) => {
   const { isLoggedIn, login } = useLoginState();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state);
+  const user = useSelector((state) => state.app.user);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawer = () => {

@@ -4,12 +4,33 @@ import FeedbackList from './FeedbackList';
 import UsersTable from './UsersTable';
 import { useLoginState } from '../context/AuthContext';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFeedbacks, deleteFeedback, blockFeedback } from '../redux/actions';
+import { fetchFeedbacks } from '../redux/actions';
+import { useGetFeedbacksQuery, useBlockFeedbackMutation, useDeleteFeedbackMutation } from '../services/api';
 
 const AdminPage = () => {
     const {isLoggedIn} = useLoginState();
     const dispatch = useDispatch();
-    const { feedbacks, user } = useSelector((state) => state);
+    const user = useSelector((state) => state.app.user);
+
+    const { data: feedbacks, isLoading: isFeedbacksLoading, error: feedbacksError } = useGetFeedbacksQuery();
+      const [blockFeedback] = useBlockFeedbackMutation();
+      const [deleteFeedback] = useDeleteFeedbackMutation();
+    
+      const handleDeleteFeedback = async (id) => {
+        try {
+          await deleteFeedback(id).unwrap();
+        } catch (error) {
+          console.error('Failed to delete feedback:', error);
+        }
+      };
+    
+      const handleBlockFeedback = async (id, isBlocked) => {
+        try {
+          await blockFeedback({ id, isBlocked }).unwrap();
+        } catch (error) {
+          console.error('Failed to block feedback:', error);
+        }
+      };
   
     useEffect(() => {
       if (isLoggedIn) {
@@ -17,13 +38,6 @@ const AdminPage = () => {
       }
     }, [isLoggedIn, dispatch]);
   
-    const handleDeleteFeedback = (id) => {
-      dispatch(deleteFeedback(id));
-    };
-  
-    const handleBlockFeedback = (id, isBlocked) => {
-      dispatch(blockFeedback(id, isBlocked));
-    };
 
   if (user?.role !== "admin") {
     return (
@@ -41,7 +55,15 @@ const AdminPage = () => {
       </Typography>
       <Typography variant="h4" gutterBottom>
         Feedback List
-        <FeedbackList feedbacks={feedbacks} onDeleteFeedback={handleDeleteFeedback} onBlockFeedback={handleBlockFeedback}/>
+      {isFeedbacksLoading && <div>Loading...</div>}
+      {feedbacksError && <div>Error: {feedbacksError.message}</div>}
+      {!isFeedbacksLoading && !feedbacksError && (
+        <FeedbackList
+          feedbacks={feedbacks || []}
+          onDeleteFeedback={handleDeleteFeedback}
+          onBlockFeedback={handleBlockFeedback}
+        />
+      )}
       </Typography>
     </Box>
   );

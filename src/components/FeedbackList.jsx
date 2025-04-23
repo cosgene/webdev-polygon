@@ -5,7 +5,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import { useSelector } from 'react-redux';
 
 const FeedbackList = ({ feedbacks, onDeleteFeedback, onBlockFeedback }) => {
-  const { user } = useSelector((state) => state);
+  const user = useSelector((state) => state.app.user);
 
   return (
     <Box sx={{ p: 2, maxWidth: 600, mx: 'auto' }}>
@@ -23,7 +23,7 @@ const FeedbackList = ({ feedbacks, onDeleteFeedback, onBlockFeedback }) => {
                     <IconButton edge="end" onClick={() => onDeleteFeedback(feedback.id)}>
                       <DeleteIcon />
                     </IconButton>
-                    <IconButton edge="end" onClick={() => onBlockFeedback(feedback.id, {isBlocked: !feedback.isBlocked, name: feedback.name, message: feedback.message})}>
+                    <IconButton edge="end" onClick={() => onBlockFeedback(feedback.id, !feedback.isBlocked)}>
                       <BlockIcon />
                     </IconButton>
                   </>

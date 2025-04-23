@@ -1,27 +1,27 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { Typography, Box } from '@mui/material';
 import FeedbackList from './FeedbackList';
-import { useSelector, useDispatch } from 'react-redux';
-import { useLoginState } from '../context/AuthContext';
-import { fetchFeedbacks, deleteFeedback, blockFeedback } from '../redux/actions';
+import { useGetFeedbacksQuery, useBlockFeedbackMutation, useDeleteFeedbackMutation } from '../services/api';
 
 const MainPage = () => {
-  const {isLoggedIn} = useLoginState();
-  const dispatch = useDispatch();
-  const { feedbacks } = useSelector((state) => state);
+  const { data: feedbacks, isLoading: isFeedbacksLoading, error: feedbacksError } = useGetFeedbacksQuery();
+  const [blockFeedback] = useBlockFeedbackMutation();
+  const [deleteFeedback] = useDeleteFeedbackMutation();
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(fetchFeedbacks());
+  const handleDeleteFeedback = async (id) => {
+    try {
+      await deleteFeedback(id).unwrap();
+    } catch (error) {
+      console.error('Failed to delete feedback:', error);
     }
-  }, [isLoggedIn, dispatch]);
-
-  const handleDeleteFeedback = (id) => {
-    dispatch(deleteFeedback(id));
   };
 
-  const handleBlockFeedback = (id, isBlocked) => {
-    dispatch(blockFeedback(id, isBlocked));
+  const handleBlockFeedback = async (id, isBlocked) => {
+    try {
+      await blockFeedback({ id, isBlocked }).unwrap();
+    } catch (error) {
+      console.error('Failed to block feedback:', error);
+    }
   };
 
   return (
@@ -32,7 +32,15 @@ const MainPage = () => {
       <Typography variant="body1">
         This is the main page.
       </Typography>
-      <FeedbackList feedbacks={feedbacks} onDeleteFeedback={handleDeleteFeedback} onBlockFeedback={handleBlockFeedback}/>
+      {isFeedbacksLoading && <div>Loading...</div>}
+      {feedbacksError && <div>Error: {feedbacksError.message}</div>}
+      {!isFeedbacksLoading && !feedbacksError && (
+        <FeedbackList
+          feedbacks={feedbacks || []}
+          onDeleteFeedback={handleDeleteFeedback}
+          onBlockFeedback={handleBlockFeedback}
+        />
+      )}
     </Box>
   );
 };
